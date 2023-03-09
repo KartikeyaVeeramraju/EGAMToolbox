@@ -2,8 +2,6 @@ close all
 clear all
 clc
 
-addpath("..\lib\")
-
 %% Test selection
 %Start by selecting the type of test you'll be performing. There are three types if test that you can choose from:
 %start: starup test for inverter

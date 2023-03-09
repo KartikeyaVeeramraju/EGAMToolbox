@@ -70,8 +70,6 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
   </style></head><body><div class="content"><h2>Contents</h2><div><ul><li><a href="#2">Test selection</a></li><li><a href="#3">Parameter settings</a></li><li><a href="#4">time settings</a></li><li><a href="#5">p-axis and r-axis flag settings</a></li><li><a href="#6">Computing EGAM variables: T, q, and R</a></li><li><a href="#7">Initializing and running the EGAM model</a></li><li><a href="#8">reconstruction of time domain signals</a></li><li><a href="#9">running the Simulink file to compute baseline</a></li><li><a href="#10">running plot scripts</a></li></ul></div><pre class="codeinput">close <span class="string">all</span>
 clear <span class="string">all</span>
 clc
-
-addpath(<span class="string">"..\lib\"</span>)
 </pre><h2 id="2">Test selection</h2><pre class="codeinput"><span class="comment">%Start by selecting the type of test you'll be performing. There are three types if test that you can choose from:</span>
 <span class="comment">%start: starup test for inverter</span>
 <span class="comment">%loadstep: load step is applied to an inverter in steady state and transients are observed</span>
@@ -213,8 +211,6 @@ Warning: Imaginary parts of complex X and/or Y arguments ignored.
 close all
 clear all
 clc
-
-addpath("..\lib\")
 
 %% Test selection
 %Start by selecting the type of test you'll be performing. There are three types if test that you can choose from:
