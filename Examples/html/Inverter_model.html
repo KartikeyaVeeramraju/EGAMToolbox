@@ -1,0 +1,211 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>Inverter_model</title><meta name="generator" content="MATLAB 9.12"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2023-03-09"><meta name="DC.source" content="Inverter_model.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; }
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+span.typesection { color:#A0522D }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h2>Contents</h2><div><ul><li><a href="#2">retrive the excitation voltage, inductor and capacitor values</a></li><li><a href="#3">run conditionals for startup, load and modulation step decisions</a></li><li><a href="#4">unstacking composite Fourier state vector to reassign to indiviual Fourier state vectors</a></li><li><a href="#5">running the differential equations</a></li><li><a href="#6">stack vectors and handover to ode process call</a></li></ul></div><pre class="codeinput"><span class="comment">% this is the function used by the ode solver to run the EGAM simulation</span>
+<span class="keyword">function</span> dxdt = Inverter_model(t,x,q1, q2,T, pflags, rflags, params)
+</pre><h2 id="2">retrive the excitation voltage, inductor and capacitor values</h2><pre class="codeinput">L1 = params.L1;
+L2 = params.L2;
+C1 = params.C1;
+C2 = params.C2;
+
+Vdc = params.Vdc; <span class="comment">% get the dc voltage excitation</span>
+</pre><pre class="codeoutput error">Not enough input arguments.
+
+Error in Inverter_model (line 5)
+L1 = params.L1;
+</pre><h2 id="3">run conditionals for startup, load and modulation step decisions</h2><pre class="codeinput"><span class="comment">% load step decisions</span>
+<span class="keyword">if</span> t &gt; params.steptime
+    Rload = params.RL2;
+<span class="keyword">else</span>
+    Rload = params.RL1;
+<span class="keyword">end</span>
+
+<span class="comment">% modulation step decisions</span>
+<span class="keyword">if</span> t &gt; params.modsteptime
+    q = q2;
+<span class="keyword">else</span>
+    q = q1;
+<span class="keyword">end</span>
+
+<span class="comment">% some helper variables</span>
+eye_dim = (2*max(pflags) + 1) * (2*max(rflags) + 1);
+vec_segment = (2*max(pflags) + 1) * (2*max(rflags) + 1);
+gammadc = [1 zeros(1,eye_dim-1)]';
+gammaac = [1 zeros(1,eye_dim-1)]';
+
+<span class="comment">% startup step decisions</span>
+<span class="keyword">if</span> t &lt; params.starttime
+    q = 0*q; <span class="comment">% no switching</span>
+    gammaac = 0*[1 zeros(1,eye_dim-1)]'; <span class="comment">%</span>
+<span class="keyword">end</span>
+
+<span class="keyword">if</span> t &lt; 0.5*params.starttime
+RindDC = 10*params.RIndDCSide;
+RindAC = 10*params.RIndACSide;
+<span class="keyword">else</span>
+    RindDC = params.RIndDCSide;
+    RindAC = params.RIndACSide;
+<span class="keyword">end</span>
+</pre><h2 id="4">unstacking composite Fourier state vector to reassign to indiviual Fourier state vectors</h2><pre class="codeinput">IL1 = x(1:vec_segment);
+VC1 = x(vec_segment+1:2*vec_segment);
+IL2 = x(2*vec_segment+1:3*vec_segment);
+VC2 = x(3*vec_segment+1:4*vec_segment);
+</pre><h2 id="5">running the differential equations</h2><p>notice when two fourier vectors are multiplying, we use the core 2D convolution algorithm</p><pre class="codeinput"><span class="comment">%input filter inductor equation</span>
+dIL1_dt = -1*(T + RindDC/L1)*IL1 - VC1/L1 + Vdc/L1*gammadc;
+
+<span class="comment">%input dc link capacitor equation</span>
+dVC1_dt = IL1/C1 - (2/C1)*conv2DDFI(IL2',q',pflags,rflags)' + (1/C1)*conv2DDFI(gammadc',IL2',pflags,rflags)' - T*VC1;
+
+<span class="comment">%output filter inductor equation</span>
+dIL2_dt = (2/L2)*conv2DDFI(q',VC1',pflags,rflags)' - (1/L2)*conv2DDFI(gammaac',VC1',pflags,rflags)' - ((1/L2)*RindAC + T)*IL2 - VC2/L2;
+
+<span class="comment">%output filter capacitor equation</span>
+dVC2_dt = (1/C2)*IL2 - (T + (1/(Rload*C2)*eye(eye_dim)))*VC2;
+</pre><h2 id="6">stack vectors and handover to ode process call</h2><pre class="codeinput">dxdt = [dIL1_dt; dVC1_dt; dIL2_dt; dVC2_dt];
+</pre><pre class="codeinput"><span class="keyword">end</span>
+</pre><p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2022a</a><br></p></div><!--
+##### SOURCE BEGIN #####
+% this is the function used by the ode solver to run the EGAM simulation
+function dxdt = Inverter_model(t,x,q1, q2,T, pflags, rflags, params)
+
+%% retrive the excitation voltage, inductor and capacitor values
+L1 = params.L1;
+L2 = params.L2;
+C1 = params.C1;
+C2 = params.C2;
+
+Vdc = params.Vdc; % get the dc voltage excitation
+
+
+%% run conditionals for startup, load and modulation step decisions
+
+% load step decisions
+if t > params.steptime
+    Rload = params.RL2;
+else
+    Rload = params.RL1;
+end
+
+% modulation step decisions
+if t > params.modsteptime
+    q = q2;
+else
+    q = q1;
+end
+
+% some helper variables
+eye_dim = (2*max(pflags) + 1) * (2*max(rflags) + 1);
+vec_segment = (2*max(pflags) + 1) * (2*max(rflags) + 1);
+gammadc = [1 zeros(1,eye_dim-1)]';
+gammaac = [1 zeros(1,eye_dim-1)]';
+
+% startup step decisions
+if t < params.starttime
+    q = 0*q; % no switching
+    gammaac = 0*[1 zeros(1,eye_dim-1)]'; %
+end
+
+if t < 0.5*params.starttime
+RindDC = 10*params.RIndDCSide;
+RindAC = 10*params.RIndACSide;
+else
+    RindDC = params.RIndDCSide;
+    RindAC = params.RIndACSide;
+end
+
+
+%% unstacking composite Fourier state vector to reassign to indiviual Fourier state vectors
+IL1 = x(1:vec_segment);
+VC1 = x(vec_segment+1:2*vec_segment);
+IL2 = x(2*vec_segment+1:3*vec_segment);
+VC2 = x(3*vec_segment+1:4*vec_segment);
+
+%% running the differential equations
+% notice when two fourier vectors are multiplying, we use the core 2D
+% convolution algorithm
+
+%input filter inductor equation
+dIL1_dt = -1*(T + RindDC/L1)*IL1 - VC1/L1 + Vdc/L1*gammadc;
+
+%input dc link capacitor equation
+dVC1_dt = IL1/C1 - (2/C1)*conv2DDFI(IL2',q',pflags,rflags)' + (1/C1)*conv2DDFI(gammadc',IL2',pflags,rflags)' - T*VC1; 
+
+%output filter inductor equation
+dIL2_dt = (2/L2)*conv2DDFI(q',VC1',pflags,rflags)' - (1/L2)*conv2DDFI(gammaac',VC1',pflags,rflags)' - ((1/L2)*RindAC + T)*IL2 - VC2/L2; 
+
+%output filter capacitor equation
+dVC2_dt = (1/C2)*IL2 - (T + (1/(Rload*C2)*eye(eye_dim)))*VC2;
+
+%% stack vectors and handover to ode process call
+
+dxdt = [dIL1_dt; dVC1_dt; dIL2_dt; dVC2_dt];
+end
+
+##### SOURCE END #####
+--></body></html>

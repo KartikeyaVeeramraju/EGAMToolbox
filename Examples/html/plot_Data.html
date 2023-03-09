@@ -1,0 +1,573 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>plot_Data</title><meta name="generator" content="MATLAB 9.12"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2023-03-09"><meta name="DC.source" content="plot_Data.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; }
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+span.typesection { color:#A0522D }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h2>Contents</h2><div><ul><li><a href="#2">Startup</a></li><li><a href="#4">Load step</a></li><li><a href="#7">Mod step</a></li></ul></div><pre class="codeinput">close <span class="string">all</span>
+clc
+
+figfont = 10;
+</pre><h2 id="2">Startup</h2><pre class="codeinput"><span class="keyword">if</span> strcmp(testType,<span class="string">'start'</span>)
+</pre><pre class="codeinput">    iL1fig = figure(1);
+
+    simoff = -1*(params.starttime+min(SwStartZero.time)); <span class="comment">%min(Startup.time);</span>
+    spanlo = 0.15;<span class="comment">%0.85*(min(SwStartZero.time)); %0.85*params.starttime;</span>
+    spanhi = 0.25;<span class="comment">%sim_time+min(SwStartZero.time);</span>
+
+    hold <span class="string">on</span>
+    grid <span class="string">on</span>
+    grid <span class="string">on</span>
+    plot(t+simoff,real(iL1_t'),<span class="string">'-'</span>);
+    plot(iL1_sim.time+simoff, iL1_sim.signals.values,<span class="string">'--'</span>);
+
+    <span class="comment">%legend('EGAM','PLECS','interpreter','latex','Location','best')</span>
+    legend(<span class="string">'EGAM'</span>,<span class="string">'PLECS'</span>,<span class="string">'interpreter'</span>,<span class="string">'latex'</span>,<span class="string">'Location'</span>,<span class="string">'northoutside'</span>,<span class="string">'orientation'</span>,<span class="string">'horizontal'</span>)
+    xline(params.steptime - params.starttime,<span class="string">'--'</span>,<span class="string">'HandleVisibility'</span>,<span class="string">'off'</span>);
+    xlabel(<span class="string">'$$t$$(s)'</span>,<span class="string">'interpreter'</span>,<span class="string">'latex'</span>,<span class="string">'FontSize'</span>,figfont)
+    ylabel(<span class="string">'$$i_{L1}(t)$$ (A)'</span>,<span class="string">'interpreter'</span>,<span class="string">'latex'</span>,<span class="string">'FontSize'</span>,figfont)
+    xlim([spanlo spanhi])
+
+
+    vC1fig = figure(2);
+    hold <span class="string">on</span>
+    grid <span class="string">on</span>
+    plot(t+simoff,real(vC1_t'),<span class="string">'-'</span>);
+    plot(vC1_sim.time+simoff, vC1_sim.signals.values,<span class="string">'--'</span>);
+
+    <span class="comment">%legend('EGAM','PLECS','interpreter','latex','Location','best')</span>
+    legend(<span class="string">'EGAM'</span>,<span class="string">'PLECS'</span>,<span class="string">'interpreter'</span>,<span class="string">'latex'</span>,<span class="string">'Location'</span>,<span class="string">'northoutside'</span>,<span class="string">'orientation'</span>,<span class="string">'horizontal'</span>)
+    xline(params.steptime - params.starttime,<span class="string">'--'</span>,<span class="string">'HandleVisibility'</span>,<span class="string">'off'</span>);
+    xlabel(<span class="string">'$$t$$(s)'</span>,<span class="string">'interpreter'</span>,<span class="string">'latex'</span>,<span class="string">'FontSize'</span>,figfont)
+    ylabel(<span class="string">'$$v_{C1}(t)$$ (V)'</span>,<span class="string">'interpreter'</span>,<span class="string">'latex'</span>,<span class="string">'FontSize'</span>,figfont)
+    <span class="comment">%xlim([-params.starttime sim_time-params.starttime ])</span>
+    xlim([spanlo spanhi])
+
+    iL2fig = figure(3);
+    hold <span class="string">on</span>
+    grid <span class="string">on</span>
+    plot(t+simoff,real(iL2_t'),<span class="string">'-'</span>);
+    plot(iL2_sim.time+simoff, iL2_sim.signals.values,<span class="string">'--'</span>);
+
+    <span class="comment">%legend('EGAM','PLECS','interpreter','latex','Location','best')</span>
+    legend(<span class="string">'EGAM'</span>,<span class="string">'PLECS'</span>,<span class="string">'interpreter'</span>,<span class="string">'latex'</span>,<span class="string">'Location'</span>,<span class="string">'northoutside'</span>,<span class="string">'orientation'</span>,<span class="string">'horizontal'</span>)
+    xline(params.steptime - params.starttime,<span class="string">'--'</span>,<span class="string">'HandleVisibility'</span>,<span class="string">'off'</span>);
+    xlabel(<span class="string">'$$t$$(s)'</span>,<span class="string">'interpreter'</span>,<span class="string">'latex'</span>,<span class="string">'FontSize'</span>,figfont)
+    ylabel(<span class="string">'$$i_{L2}(t)$$ (A)'</span>,<span class="string">'interpreter'</span>,<span class="string">'latex'</span>,<span class="string">'FontSize'</span>,figfont)
+    <span class="comment">%xlim([-params.starttime sim_time-params.starttime ])</span>
+    xlim([spanlo spanhi])
+
+    vC2fig = figure(4);
+    hold <span class="string">on</span>
+    grid <span class="string">on</span>
+    plot(t+simoff,real(vC2_t'),<span class="string">'-'</span>);
+    plot(vC2_sim.time+simoff, vC2_sim.signals.values,<span class="string">'--'</span>);
+
+    <span class="comment">%legend('EGAM','PLECS','interpreter','latex','Location','best')</span>
+    legend(<span class="string">'EGAM'</span>,<span class="string">'PLECS'</span>,<span class="string">'interpreter'</span>,<span class="string">'latex'</span>,<span class="string">'Location'</span>,<span class="string">'northoutside'</span>,<span class="string">'orientation'</span>,<span class="string">'horizontal'</span>)
+    xline(params.steptime - params.starttime,<span class="string">'--'</span>,<span class="string">'HandleVisibility'</span>,<span class="string">'off'</span>);
+    xlabel(<span class="string">'$$t$$(s)'</span>,<span class="string">'interpreter'</span>,<span class="string">'latex'</span>,<span class="string">'FontSize'</span>,figfont)
+    ylabel(<span class="string">'$$v_{C2}(t)$$ (V)'</span>,<span class="string">'interpreter'</span>,<span class="string">'latex'</span>,<span class="string">'FontSize'</span>,figfont)
+    <span class="comment">%xlim([-params.starttime sim_time-params.starttime ])</span>
+    xlim([spanlo spanhi])
+    <span class="comment">%fh.WindowState = 'maximized';</span>
+</pre><h2 id="4">Load step</h2><pre class="codeinput"><span class="keyword">elseif</span> strcmp(testType,<span class="string">'loadstep'</span>)
+</pre><pre class="codeinput">    off = -params.steptime;<span class="comment">%min(Load_Step.time) ;</span>
+    xlimmin = params.steptime - 2/50;
+    xlimmax = params.steptime + 2/50;
+
+    xlimminZoom = params.steptime - 0.1/50;
+    xlimmaxZoom = params.steptime + 0.1/50;
+
+    iL1fig = figure(1);
+    subplot(2,1,1)
+        hold <span class="string">on</span>
+        grid <span class="string">on</span>
+        grid <span class="string">on</span>
+        plot(t,iL1_t',<span class="string">'-'</span>);
+        plot(iL1_sim.time, iL1_sim.signals.values,<span class="string">'--'</span>);
+        legend(<span class="string">'EGAM'</span>,<span class="string">'PLECS'</span>,<span class="string">'interpreter'</span>,<span class="string">'latex'</span>,<span class="string">'Location'</span>,<span class="string">'northoutside'</span>,<span class="string">'orientation'</span>,<span class="string">'horizontal'</span>)
+        xline(params.steptime,<span class="string">'--'</span>,<span class="string">'HandleVisibility'</span>,<span class="string">'off'</span>);
+        xline(xlimminZoom,<span class="string">'r:'</span>,<span class="string">'HandleVisibility'</span>,<span class="string">'off'</span>);
+        xline(xlimmaxZoom,<span class="string">'r:'</span>,<span class="string">'HandleVisibility'</span>,<span class="string">'off'</span>);
+        xlabel(<span class="string">'$$t$$(s)'</span>,<span class="string">'interpreter'</span>,<span class="string">'latex'</span>,<span class="string">'FontSize'</span>,figfont)
+        ylabel(<span class="string">'$$i_{L1}(t)$$ (A)'</span>,<span class="string">'interpreter'</span>,<span class="string">'latex'</span>,<span class="string">'FontSize'</span>,figfont)
+        xlim([xlimmin xlimmax])
+    subplot(2,1,2)
+        hold <span class="string">on</span>
+        grid <span class="string">on</span>
+        grid <span class="string">on</span>
+        plot(t,iL1_t',<span class="string">'-'</span>);
+        plot(iL1_sim.time, iL1_sim.signals.values,<span class="string">'--'</span>);
+        xline(params.steptime,<span class="string">'--'</span>,<span class="string">'HandleVisibility'</span>,<span class="string">'off'</span>);
+        xlabel(<span class="string">'$$t$$(s)'</span>,<span class="string">'interpreter'</span>,<span class="string">'latex'</span>,<span class="string">'FontSize'</span>,figfont)
+        ylabel(<span class="string">'$$i_{L1}(t)$$ (A)'</span>,<span class="string">'interpreter'</span>,<span class="string">'latex'</span>,<span class="string">'FontSize'</span>,figfont)
+        xlim([xlimminZoom xlimmaxZoom])
+
+
+    vC1fig = figure(2);
+    subplot(2,1,1)
+        hold <span class="string">on</span>
+        grid <span class="string">on</span>
+        plot(t,vC1_t',<span class="string">'-'</span>);
+        plot(vC1_sim.time, vC1_sim.signals.values,<span class="string">'--'</span>);
+        legend(<span class="string">'EGAM'</span>,<span class="string">'PLECS'</span>,<span class="string">'interpreter'</span>,<span class="string">'latex'</span>,<span class="string">'Location'</span>,<span class="string">'northoutside'</span>,<span class="string">'orientation'</span>,<span class="string">'horizontal'</span>)
+        xline(params.steptime,<span class="string">'--'</span>,<span class="string">'HandleVisibility'</span>,<span class="string">'off'</span>);
+        xline(xlimminZoom,<span class="string">'r:'</span>,<span class="string">'HandleVisibility'</span>,<span class="string">'off'</span>);
+        xline(xlimmaxZoom,<span class="string">'r:'</span>,<span class="string">'HandleVisibility'</span>,<span class="string">'off'</span>);
+        xlabel(<span class="string">'$$t$$(s)'</span>,<span class="string">'interpreter'</span>,<span class="string">'latex'</span>,<span class="string">'FontSize'</span>,figfont)
+        ylabel(<span class="string">'$$v_{C1}(t)$$ (V)'</span>,<span class="string">'interpreter'</span>,<span class="string">'latex'</span>,<span class="string">'FontSize'</span>,figfont)
+        xlim([xlimmin xlimmax])
+
+    subplot(2,1,2)
+        hold <span class="string">on</span>
+        grid <span class="string">on</span>
+        plot(t,vC1_t',<span class="string">'-'</span>);
+        plot(vC1_sim.time, vC1_sim.signals.values,<span class="string">'--'</span>);
+        xline(params.steptime,<span class="string">'--'</span>,<span class="string">'HandleVisibility'</span>,<span class="string">'off'</span>);
+        xlabel(<span class="string">'$$t$$(s)'</span>,<span class="string">'interpreter'</span>,<span class="string">'latex'</span>,<span class="string">'FontSize'</span>,figfont)
+        ylabel(<span class="string">'$$v_{C1}(t)$$ (V)'</span>,<span class="string">'interpreter'</span>,<span class="string">'latex'</span>,<span class="string">'FontSize'</span>,figfont)
+        xlim([xlimminZoom xlimmaxZoom])
+
+    iL2fig = figure(3);
+    subplot(2,1,1)
+        hold <span class="string">on</span>
+        grid <span class="string">on</span>
+        plot(t,iL2_t',<span class="string">'-'</span>);
+        plot(iL2_sim.time, iL2_sim.signals.values,<span class="string">'--'</span>);
+        legend(<span class="string">'EGAM'</span>,<span class="string">'PLECS'</span>,<span class="string">'interpreter'</span>,<span class="string">'latex'</span>,<span class="string">'Location'</span>,<span class="string">'northoutside'</span>,<span class="string">'orientation'</span>,<span class="string">'horizontal'</span>)
+        xline(params.steptime,<span class="string">'--'</span>,<span class="string">'HandleVisibility'</span>,<span class="string">'off'</span>);
+        xline(xlimminZoom,<span class="string">'r:'</span>,<span class="string">'HandleVisibility'</span>,<span class="string">'off'</span>);
+        xline(xlimmaxZoom,<span class="string">'r:'</span>,<span class="string">'HandleVisibility'</span>,<span class="string">'off'</span>);
+        xlabel(<span class="string">'$$t$$(s)'</span>,<span class="string">'interpreter'</span>,<span class="string">'latex'</span>,<span class="string">'FontSize'</span>,figfont)
+        ylabel(<span class="string">'$$i_{L2}(t)$$ (A)'</span>,<span class="string">'interpreter'</span>,<span class="string">'latex'</span>,<span class="string">'FontSize'</span>,figfont)
+        xlim([xlimmin xlimmax])
+
+    subplot(2,1,2)
+        hold <span class="string">on</span>
+        grid <span class="string">on</span>
+        plot(t,iL2_t',<span class="string">'-'</span>);
+        plot(iL2_sim.time, iL2_sim.signals.values,<span class="string">'--'</span>);
+        xline(params.steptime,<span class="string">'--'</span>,<span class="string">'HandleVisibility'</span>,<span class="string">'off'</span>);
+        xlabel(<span class="string">'$$t$$(s)'</span>,<span class="string">'interpreter'</span>,<span class="string">'latex'</span>,<span class="string">'FontSize'</span>,figfont)
+        ylabel(<span class="string">'$$i_{L2}(t)$$ (A)'</span>,<span class="string">'interpreter'</span>,<span class="string">'latex'</span>,<span class="string">'FontSize'</span>,figfont)
+        xlim([xlimminZoom xlimmaxZoom])
+
+    vC2fig = figure(4);
+    subplot(2,1,1)
+        hold <span class="string">on</span>
+        grid <span class="string">on</span>
+        plot(t,vC2_t',<span class="string">'-'</span>);
+        plot(vC2_sim.time, vC2_sim.signals.values,<span class="string">'--'</span>);
+        legend(<span class="string">'EGAM'</span>,<span class="string">'PLECS'</span>,<span class="string">'interpreter'</span>,<span class="string">'latex'</span>,<span class="string">'Location'</span>,<span class="string">'northoutside'</span>,<span class="string">'orientation'</span>,<span class="string">'horizontal'</span>)
+        xline(params.steptime,<span class="string">'--'</span>,<span class="string">'HandleVisibility'</span>,<span class="string">'off'</span>);
+        xline(xlimminZoom,<span class="string">'r:'</span>,<span class="string">'HandleVisibility'</span>,<span class="string">'off'</span>);
+        xline(xlimmaxZoom,<span class="string">'r:'</span>,<span class="string">'HandleVisibility'</span>,<span class="string">'off'</span>);
+        xlabel(<span class="string">'$$t$$(s)'</span>,<span class="string">'interpreter'</span>,<span class="string">'latex'</span>,<span class="string">'FontSize'</span>,figfont)
+        ylabel(<span class="string">'$$v_{C2}(t)$$ (V)'</span>,<span class="string">'interpreter'</span>,<span class="string">'latex'</span>,<span class="string">'FontSize'</span>,figfont)
+        xlim([xlimmin xlimmax])
+        <span class="comment">%fh.WindowState = 'maximized';</span>
+
+    subplot(2,1,2)
+        hold <span class="string">on</span>
+        grid <span class="string">on</span>
+        plot(t,vC2_t',<span class="string">'-'</span>);
+        plot(vC2_sim.time, vC2_sim.signals.values,<span class="string">'--'</span>);
+        xline(params.steptime,<span class="string">'--'</span>,<span class="string">'HandleVisibility'</span>,<span class="string">'off'</span>);
+        xlabel(<span class="string">'$$t$$(s)'</span>,<span class="string">'interpreter'</span>,<span class="string">'latex'</span>,<span class="string">'FontSize'</span>,figfont)
+        ylabel(<span class="string">'$$v_{C2}(t)$$ (V)'</span>,<span class="string">'interpreter'</span>,<span class="string">'latex'</span>,<span class="string">'FontSize'</span>,figfont)
+        xlim([xlimminZoom xlimmaxZoom])
+</pre><h2 id="7">Mod step</h2><pre class="codeinput"><span class="keyword">elseif</span> strcmp(testType,<span class="string">'modstep'</span>)
+
+    off = params.modsteptime + 4.015e-3;
+    xlimmin = params.modsteptime - 2/50;
+    xlimmax = params.modsteptime + 2/50;
+
+    xlimminZoom = params.modsteptime - 0.1/50;
+    xlimmaxZoom = params.modsteptime + 0.1/50;
+
+    iL1fig = figure(1);
+    <span class="comment">%subplot(2,1,1)</span>
+        hold <span class="string">on</span>
+        grid <span class="string">on</span>
+        plot(t,iL1_t',<span class="string">'-'</span>);
+        plot(iL1_sim.time, iL1_sim.signals.values,<span class="string">'--'</span>);
+        legend(<span class="string">'EGAM'</span>,<span class="string">'PLECS'</span>,<span class="string">'interpreter'</span>,<span class="string">'latex'</span>,<span class="string">'Location'</span>,<span class="string">'northoutside'</span>,<span class="string">'orientation'</span>,<span class="string">'horizontal'</span>)
+        xline(params.modsteptime,<span class="string">'k--'</span>,<span class="string">'HandleVisibility'</span>,<span class="string">'off'</span>);
+        xline(xlimminZoom,<span class="string">'r:'</span>,<span class="string">'HandleVisibility'</span>,<span class="string">'off'</span>);
+        xline(xlimmaxZoom,<span class="string">'r:'</span>,<span class="string">'HandleVisibility'</span>,<span class="string">'off'</span>);
+        xlabel(<span class="string">'$$t$$(s)'</span>,<span class="string">'interpreter'</span>,<span class="string">'latex'</span>,<span class="string">'FontSize'</span>,figfont)
+        ylabel(<span class="string">'$$i_{L1}(t)$$ (A)'</span>,<span class="string">'interpreter'</span>,<span class="string">'latex'</span>,<span class="string">'FontSize'</span>,figfont)
+        xlim([xlimmin xlimmax])
+
+
+
+    vC1fig = figure(2);
+        hold <span class="string">on</span>
+        grid <span class="string">on</span>
+        plot(t,vC1_t',<span class="string">'-'</span>);
+        plot(vC1_sim.time, vC1_sim.signals.values,<span class="string">'--'</span>);
+        legend(<span class="string">'EGAM'</span>,<span class="string">'PLECS'</span>,<span class="string">'interpreter'</span>,<span class="string">'latex'</span>,<span class="string">'Location'</span>,<span class="string">'northoutside'</span>,<span class="string">'orientation'</span>,<span class="string">'horizontal'</span>)
+        xline(params.modsteptime,<span class="string">'k--'</span>,<span class="string">'HandleVisibility'</span>,<span class="string">'off'</span>);
+        xline(xlimminZoom,<span class="string">'r:'</span>,<span class="string">'HandleVisibility'</span>,<span class="string">'off'</span>);
+        xline(xlimmaxZoom,<span class="string">'r:'</span>,<span class="string">'HandleVisibility'</span>,<span class="string">'off'</span>);
+        xlabel(<span class="string">'$$t$$(s)'</span>,<span class="string">'interpreter'</span>,<span class="string">'latex'</span>,<span class="string">'FontSize'</span>,figfont)
+        ylabel(<span class="string">'$$v_{C1}(t)$$ (V)'</span>,<span class="string">'interpreter'</span>,<span class="string">'latex'</span>,<span class="string">'FontSize'</span>,figfont)
+        xlim([xlimmin xlimmax])
+        ylim([0 60])
+
+
+
+    iL2fig = figure(3);
+        hold <span class="string">on</span>
+        grid <span class="string">on</span>
+        plot(t,iL2_t',<span class="string">'-'</span>);
+        plot(iL2_sim.time, iL2_sim.signals.values,<span class="string">'--'</span>);
+        legend(<span class="string">'EGAM'</span>,<span class="string">'PLECS'</span>,<span class="string">'interpreter'</span>,<span class="string">'latex'</span>,<span class="string">'Location'</span>,<span class="string">'northoutside'</span>,<span class="string">'orientation'</span>,<span class="string">'horizontal'</span>)
+        xline(params.modsteptime,<span class="string">'k--'</span>,<span class="string">'HandleVisibility'</span>,<span class="string">'off'</span>);
+        xline(xlimminZoom,<span class="string">'r:'</span>,<span class="string">'HandleVisibility'</span>,<span class="string">'off'</span>);
+        xline(xlimmaxZoom,<span class="string">'r:'</span>,<span class="string">'HandleVisibility'</span>,<span class="string">'off'</span>);
+        xlabel(<span class="string">'$$t$$(s)'</span>,<span class="string">'interpreter'</span>,<span class="string">'latex'</span>,<span class="string">'FontSize'</span>,figfont)
+        ylabel(<span class="string">'$$i_{L2}(t)$$ (A)'</span>,<span class="string">'interpreter'</span>,<span class="string">'latex'</span>,<span class="string">'FontSize'</span>,figfont)
+        xlim([xlimmin xlimmax])
+
+
+    vC2fig = figure(4);
+        hold <span class="string">on</span>
+        grid <span class="string">on</span>
+        plot(t,vC2_t',<span class="string">'-'</span>);
+        plot(vC2_sim.time, vC2_sim.signals.values,<span class="string">'--'</span>);
+        legend(<span class="string">'EGAM'</span>,<span class="string">'PLECS'</span>,<span class="string">'interpreter'</span>,<span class="string">'latex'</span>,<span class="string">'Location'</span>,<span class="string">'northoutside'</span>,<span class="string">'orientation'</span>,<span class="string">'horizontal'</span>)
+        xline(params.modsteptime,<span class="string">'k--'</span>,<span class="string">'HandleVisibility'</span>,<span class="string">'off'</span>);
+        xline(xlimminZoom,<span class="string">'r:'</span>,<span class="string">'HandleVisibility'</span>,<span class="string">'off'</span>);
+        xline(xlimmaxZoom,<span class="string">'r:'</span>,<span class="string">'HandleVisibility'</span>,<span class="string">'off'</span>);
+        xlabel(<span class="string">'$$t$$(s)'</span>,<span class="string">'interpreter'</span>,<span class="string">'latex'</span>,<span class="string">'FontSize'</span>,figfont)
+        ylabel(<span class="string">'$$v_{C2}(t)$$ (V)'</span>,<span class="string">'interpreter'</span>,<span class="string">'latex'</span>,<span class="string">'FontSize'</span>,figfont)
+        xlim([xlimmin xlimmax])
+
+<span class="keyword">end</span>
+</pre><pre class="codeoutput">Warning: Imaginary parts of complex X and/or Y arguments ignored. 
+Warning: Imaginary parts of complex X and/or Y arguments ignored. 
+Warning: Imaginary parts of complex X and/or Y arguments ignored. 
+Warning: Imaginary parts of complex X and/or Y arguments ignored. 
+</pre><img vspace="5" hspace="5" src="plot_Data_01.png" alt=""> <img vspace="5" hspace="5" src="plot_Data_02.png" alt=""> <img vspace="5" hspace="5" src="plot_Data_03.png" alt=""> <img vspace="5" hspace="5" src="plot_Data_04.png" alt=""> <p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2022a</a><br></p></div><!--
+##### SOURCE BEGIN #####
+close all
+clc
+
+figfont = 10;
+
+%% Startup
+if strcmp(testType,'start')
+
+    iL1fig = figure(1);
+
+    simoff = -1*(params.starttime+min(SwStartZero.time)); %min(Startup.time);
+    spanlo = 0.15;%0.85*(min(SwStartZero.time)); %0.85*params.starttime;
+    spanhi = 0.25;%sim_time+min(SwStartZero.time);
+
+    hold on
+    grid on
+    grid on
+    plot(t+simoff,real(iL1_t'),'-');
+    plot(iL1_sim.time+simoff, iL1_sim.signals.values,'REPLACE_WITH_DASH_DASH');
+
+    %legend('EGAM','PLECS','interpreter','latex','Location','best')
+    legend('EGAM','PLECS','interpreter','latex','Location','northoutside','orientation','horizontal')
+    xline(params.steptime - params.starttime,'REPLACE_WITH_DASH_DASH','HandleVisibility','off');
+    xlabel('$$t$$(s)','interpreter','latex','FontSize',figfont)
+    ylabel('$$i_{L1}(t)$$ (A)','interpreter','latex','FontSize',figfont)
+    xlim([spanlo spanhi])
+
+
+    vC1fig = figure(2);
+    hold on
+    grid on
+    plot(t+simoff,real(vC1_t'),'-');
+    plot(vC1_sim.time+simoff, vC1_sim.signals.values,'REPLACE_WITH_DASH_DASH');
+
+    %legend('EGAM','PLECS','interpreter','latex','Location','best')
+    legend('EGAM','PLECS','interpreter','latex','Location','northoutside','orientation','horizontal')
+    xline(params.steptime - params.starttime,'REPLACE_WITH_DASH_DASH','HandleVisibility','off');
+    xlabel('$$t$$(s)','interpreter','latex','FontSize',figfont)
+    ylabel('$$v_{C1}(t)$$ (V)','interpreter','latex','FontSize',figfont)
+    %xlim([-params.starttime sim_time-params.starttime ])
+    xlim([spanlo spanhi])
+
+    iL2fig = figure(3);
+    hold on
+    grid on
+    plot(t+simoff,real(iL2_t'),'-');
+    plot(iL2_sim.time+simoff, iL2_sim.signals.values,'REPLACE_WITH_DASH_DASH');
+
+    %legend('EGAM','PLECS','interpreter','latex','Location','best')
+    legend('EGAM','PLECS','interpreter','latex','Location','northoutside','orientation','horizontal')
+    xline(params.steptime - params.starttime,'REPLACE_WITH_DASH_DASH','HandleVisibility','off');
+    xlabel('$$t$$(s)','interpreter','latex','FontSize',figfont)
+    ylabel('$$i_{L2}(t)$$ (A)','interpreter','latex','FontSize',figfont)
+    %xlim([-params.starttime sim_time-params.starttime ])
+    xlim([spanlo spanhi])
+
+    vC2fig = figure(4);
+    hold on
+    grid on
+    plot(t+simoff,real(vC2_t'),'-');
+    plot(vC2_sim.time+simoff, vC2_sim.signals.values,'REPLACE_WITH_DASH_DASH');
+
+    %legend('EGAM','PLECS','interpreter','latex','Location','best')
+    legend('EGAM','PLECS','interpreter','latex','Location','northoutside','orientation','horizontal')
+    xline(params.steptime - params.starttime,'REPLACE_WITH_DASH_DASH','HandleVisibility','off');
+    xlabel('$$t$$(s)','interpreter','latex','FontSize',figfont)
+    ylabel('$$v_{C2}(t)$$ (V)','interpreter','latex','FontSize',figfont)
+    %xlim([-params.starttime sim_time-params.starttime ])
+    xlim([spanlo spanhi])
+    %fh.WindowState = 'maximized';
+
+
+    %% Load step
+elseif strcmp(testType,'loadstep')
+
+    off = -params.steptime;%min(Load_Step.time) ;
+    xlimmin = params.steptime - 2/50;
+    xlimmax = params.steptime + 2/50;
+    
+    xlimminZoom = params.steptime - 0.1/50;
+    xlimmaxZoom = params.steptime + 0.1/50;
+
+    iL1fig = figure(1);
+    subplot(2,1,1)
+        hold on
+        grid on
+        grid on
+        plot(t,iL1_t','-');
+        plot(iL1_sim.time, iL1_sim.signals.values,'REPLACE_WITH_DASH_DASH');
+        legend('EGAM','PLECS','interpreter','latex','Location','northoutside','orientation','horizontal')
+        xline(params.steptime,'REPLACE_WITH_DASH_DASH','HandleVisibility','off');
+        xline(xlimminZoom,'r:','HandleVisibility','off');
+        xline(xlimmaxZoom,'r:','HandleVisibility','off');
+        xlabel('$$t$$(s)','interpreter','latex','FontSize',figfont)
+        ylabel('$$i_{L1}(t)$$ (A)','interpreter','latex','FontSize',figfont)
+        xlim([xlimmin xlimmax])
+    subplot(2,1,2)
+        hold on
+        grid on
+        grid on
+        plot(t,iL1_t','-');
+        plot(iL1_sim.time, iL1_sim.signals.values,'REPLACE_WITH_DASH_DASH');
+        xline(params.steptime,'REPLACE_WITH_DASH_DASH','HandleVisibility','off');
+        xlabel('$$t$$(s)','interpreter','latex','FontSize',figfont)
+        ylabel('$$i_{L1}(t)$$ (A)','interpreter','latex','FontSize',figfont)
+        xlim([xlimminZoom xlimmaxZoom])
+    
+
+    vC1fig = figure(2);
+    subplot(2,1,1)
+        hold on
+        grid on
+        plot(t,vC1_t','-');
+        plot(vC1_sim.time, vC1_sim.signals.values,'REPLACE_WITH_DASH_DASH');
+        legend('EGAM','PLECS','interpreter','latex','Location','northoutside','orientation','horizontal')
+        xline(params.steptime,'REPLACE_WITH_DASH_DASH','HandleVisibility','off');
+        xline(xlimminZoom,'r:','HandleVisibility','off');
+        xline(xlimmaxZoom,'r:','HandleVisibility','off');
+        xlabel('$$t$$(s)','interpreter','latex','FontSize',figfont)
+        ylabel('$$v_{C1}(t)$$ (V)','interpreter','latex','FontSize',figfont)
+        xlim([xlimmin xlimmax])
+    
+    subplot(2,1,2)
+        hold on
+        grid on
+        plot(t,vC1_t','-');
+        plot(vC1_sim.time, vC1_sim.signals.values,'REPLACE_WITH_DASH_DASH');
+        xline(params.steptime,'REPLACE_WITH_DASH_DASH','HandleVisibility','off');
+        xlabel('$$t$$(s)','interpreter','latex','FontSize',figfont)
+        ylabel('$$v_{C1}(t)$$ (V)','interpreter','latex','FontSize',figfont)
+        xlim([xlimminZoom xlimmaxZoom])
+
+    iL2fig = figure(3);
+    subplot(2,1,1)
+        hold on
+        grid on
+        plot(t,iL2_t','-');
+        plot(iL2_sim.time, iL2_sim.signals.values,'REPLACE_WITH_DASH_DASH');
+        legend('EGAM','PLECS','interpreter','latex','Location','northoutside','orientation','horizontal')
+        xline(params.steptime,'REPLACE_WITH_DASH_DASH','HandleVisibility','off');
+        xline(xlimminZoom,'r:','HandleVisibility','off');
+        xline(xlimmaxZoom,'r:','HandleVisibility','off');
+        xlabel('$$t$$(s)','interpreter','latex','FontSize',figfont)
+        ylabel('$$i_{L2}(t)$$ (A)','interpreter','latex','FontSize',figfont)
+        xlim([xlimmin xlimmax])
+
+    subplot(2,1,2)
+        hold on
+        grid on
+        plot(t,iL2_t','-');
+        plot(iL2_sim.time, iL2_sim.signals.values,'REPLACE_WITH_DASH_DASH');
+        xline(params.steptime,'REPLACE_WITH_DASH_DASH','HandleVisibility','off');
+        xlabel('$$t$$(s)','interpreter','latex','FontSize',figfont)
+        ylabel('$$i_{L2}(t)$$ (A)','interpreter','latex','FontSize',figfont)
+        xlim([xlimminZoom xlimmaxZoom])
+
+    vC2fig = figure(4);
+    subplot(2,1,1)
+        hold on
+        grid on
+        plot(t,vC2_t','-');
+        plot(vC2_sim.time, vC2_sim.signals.values,'REPLACE_WITH_DASH_DASH');
+        legend('EGAM','PLECS','interpreter','latex','Location','northoutside','orientation','horizontal')
+        xline(params.steptime,'REPLACE_WITH_DASH_DASH','HandleVisibility','off');
+        xline(xlimminZoom,'r:','HandleVisibility','off');
+        xline(xlimmaxZoom,'r:','HandleVisibility','off');
+        xlabel('$$t$$(s)','interpreter','latex','FontSize',figfont)
+        ylabel('$$v_{C2}(t)$$ (V)','interpreter','latex','FontSize',figfont)
+        xlim([xlimmin xlimmax])
+        %fh.WindowState = 'maximized';
+
+    subplot(2,1,2)
+        hold on
+        grid on
+        plot(t,vC2_t','-');
+        plot(vC2_sim.time, vC2_sim.signals.values,'REPLACE_WITH_DASH_DASH');
+        xline(params.steptime,'REPLACE_WITH_DASH_DASH','HandleVisibility','off');
+        xlabel('$$t$$(s)','interpreter','latex','FontSize',figfont)
+        ylabel('$$v_{C2}(t)$$ (V)','interpreter','latex','FontSize',figfont)
+        xlim([xlimminZoom xlimmaxZoom])
+
+
+    %% Mod step
+elseif strcmp(testType,'modstep')
+
+    off = params.modsteptime + 4.015e-3;
+    xlimmin = params.modsteptime - 2/50;
+    xlimmax = params.modsteptime + 2/50;
+
+    xlimminZoom = params.modsteptime - 0.1/50;
+    xlimmaxZoom = params.modsteptime + 0.1/50;
+
+    iL1fig = figure(1);
+    %subplot(2,1,1)
+        hold on
+        grid on
+        plot(t,iL1_t','-');
+        plot(iL1_sim.time, iL1_sim.signals.values,'REPLACE_WITH_DASH_DASH');
+        legend('EGAM','PLECS','interpreter','latex','Location','northoutside','orientation','horizontal')
+        xline(params.modsteptime,'kREPLACE_WITH_DASH_DASH','HandleVisibility','off');
+        xline(xlimminZoom,'r:','HandleVisibility','off');
+        xline(xlimmaxZoom,'r:','HandleVisibility','off');
+        xlabel('$$t$$(s)','interpreter','latex','FontSize',figfont)
+        ylabel('$$i_{L1}(t)$$ (A)','interpreter','latex','FontSize',figfont)
+        xlim([xlimmin xlimmax])
+
+
+
+    vC1fig = figure(2);
+        hold on
+        grid on
+        plot(t,vC1_t','-');
+        plot(vC1_sim.time, vC1_sim.signals.values,'REPLACE_WITH_DASH_DASH');
+        legend('EGAM','PLECS','interpreter','latex','Location','northoutside','orientation','horizontal')
+        xline(params.modsteptime,'kREPLACE_WITH_DASH_DASH','HandleVisibility','off');
+        xline(xlimminZoom,'r:','HandleVisibility','off');
+        xline(xlimmaxZoom,'r:','HandleVisibility','off');
+        xlabel('$$t$$(s)','interpreter','latex','FontSize',figfont)
+        ylabel('$$v_{C1}(t)$$ (V)','interpreter','latex','FontSize',figfont)
+        xlim([xlimmin xlimmax])
+        ylim([0 60])
+
+    
+
+    iL2fig = figure(3);
+        hold on
+        grid on
+        plot(t,iL2_t','-');
+        plot(iL2_sim.time, iL2_sim.signals.values,'REPLACE_WITH_DASH_DASH');
+        legend('EGAM','PLECS','interpreter','latex','Location','northoutside','orientation','horizontal')
+        xline(params.modsteptime,'kREPLACE_WITH_DASH_DASH','HandleVisibility','off');
+        xline(xlimminZoom,'r:','HandleVisibility','off');
+        xline(xlimmaxZoom,'r:','HandleVisibility','off');
+        xlabel('$$t$$(s)','interpreter','latex','FontSize',figfont)
+        ylabel('$$i_{L2}(t)$$ (A)','interpreter','latex','FontSize',figfont)
+        xlim([xlimmin xlimmax])
+
+
+    vC2fig = figure(4);
+        hold on
+        grid on
+        plot(t,vC2_t','-');
+        plot(vC2_sim.time, vC2_sim.signals.values,'REPLACE_WITH_DASH_DASH');
+        legend('EGAM','PLECS','interpreter','latex','Location','northoutside','orientation','horizontal')
+        xline(params.modsteptime,'kREPLACE_WITH_DASH_DASH','HandleVisibility','off');
+        xline(xlimminZoom,'r:','HandleVisibility','off');
+        xline(xlimmaxZoom,'r:','HandleVisibility','off');
+        xlabel('$$t$$(s)','interpreter','latex','FontSize',figfont)
+        ylabel('$$v_{C2}(t)$$ (V)','interpreter','latex','FontSize',figfont)
+        xlim([xlimmin xlimmax])
+
+end
+
+
+##### SOURCE END #####
+--></body></html>

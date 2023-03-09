@@ -1,0 +1,392 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>init_script</title><meta name="generator" content="MATLAB 9.12"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2023-03-09"><meta name="DC.source" content="init_script.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; }
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+span.typesection { color:#A0522D }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h2>Contents</h2><div><ul><li><a href="#2">Test selection</a></li><li><a href="#3">Parameter settings</a></li><li><a href="#4">time settings</a></li><li><a href="#5">p-axis and r-axis flag settings</a></li><li><a href="#6">Computing EGAM variables: T, q, and R</a></li><li><a href="#7">Initializing and running the EGAM model</a></li><li><a href="#8">reconstruction of time domain signals</a></li><li><a href="#9">running the Simulink file to compute baseline</a></li><li><a href="#10">running plot scripts</a></li></ul></div><pre class="codeinput">close <span class="string">all</span>
+clear <span class="string">all</span>
+clc
+
+addpath(<span class="string">"..\lib\"</span>)
+</pre><h2 id="2">Test selection</h2><pre class="codeinput"><span class="comment">%Start by selecting the type of test you'll be performing. There are three types if test that you can choose from:</span>
+<span class="comment">%start: starup test for inverter</span>
+<span class="comment">%loadstep: load step is applied to an inverter in steady state and transients are observed</span>
+<span class="comment">%modstep:  modulation index step is applied to an inverter in steady state and transients are observed</span>
+
+<span class="comment">%testType = 'start';</span>
+<span class="comment">%testType = 'loadstep';</span>
+testType = <span class="string">'modstep'</span>;
+</pre><h2 id="3">Parameter settings</h2><p>fix the parameters of the inverter system (or any other system you are modeling).</p><pre class="codeinput">fsw = 10e+3;        <span class="comment">%switching frequency</span>
+fg = 50;            <span class="comment">% modulation frequency</span>
+Tsw = 1/fsw;
+wg = 2*pi*fg;       <span class="comment">% angular modulation ferequency</span>
+ws = 2*pi*fsw;      <span class="comment">% angular switching ferequency</span>
+params.Vdc = 50;    <span class="comment">% set the dc side voltage</span>
+
+
+params.L1 = 2.2e-3;                 <span class="comment">% dc side inductor</span>
+params.L2 = 2*2.2e-3;               <span class="comment">% ac side inductor</span>
+params.RindDCLF = (200+87)*1e-3;    <span class="comment">% dc inductor esr low frequency</span>
+params.RindDCHF = 10;               <span class="comment">% dc indcutor esr high frequency</span>
+params.RindACLF = (2*87)*1e-3;      <span class="comment">% ac inductor esr low frequency</span>
+params.RindACHF = 20;               <span class="comment">% ac inductor esr high frequency</span>
+
+
+params.C1 = 520e-6;                 <span class="comment">% dc capacitor</span>
+params.ESRC1 = 100e-3;              <span class="comment">% dc capacitor esr (not included in EGAM model; only for PLECS model)</span>
+params.C2 = 10e-6;                  <span class="comment">% ac capacitor</span>
+params.ESRC2 = 1;                   <span class="comment">% ac capacitor esr (not included in EGAM model; only for PLECS model)</span>
+params.RL1 = 45;                    <span class="comment">% load resistance before load step</span>
+params.RL2 = 22.5;                  <span class="comment">% load resistance after load step</span>
+params.VCinit = 0;                  <span class="comment">% initial capacitor voltages</span>
+params.ILinit = 0;                  <span class="comment">% initial inductor currents</span>
+params.modIdx1 = 0.75;              <span class="comment">% modulation index before mod step</span>
+params.modIdx2 = 0.85;              <span class="comment">% modulation index after mod step</span>
+
+params.starttime = 0.4;             <span class="comment">% instant of inverter operation startup</span>
+params.steptime = 0.2+25/50;        <span class="comment">% instant of load step</span>
+params.modsteptime = 0.2+30/50;     <span class="comment">% instant of modulation index step</span>
+
+sw_phase = (pi)*(Tsw/(2*pi));       <span class="comment">% phase in radians of the carrier wavefrom</span>
+phi_hat = sw_phase * ((2*pi)/Tsw);
+sw_phase_plecs = 0;
+swmag = 1;
+</pre><h2 id="4">time settings</h2><p>setting the simulation time, startup time, modstep time, load step time different settings are applied as they were used to overlay hardware results. This is not relavant if you are running without hardware results. You can choose any values you like.</p><pre class="codeinput"><span class="keyword">if</span> strcmp(testType,<span class="string">'loadstep'</span>)
+    phi_bar = 0*pi/180;                     <span class="comment">% modulation waveform's phase in (deg to radians)</span>
+    params.steptime = 25/50;                <span class="comment">% instant of inverter operation startup</span>
+    params.modsteptime = 30/50;             <span class="comment">% instant of modulation index step</span>
+    sim_time = 30/50 + (params.starttime);  <span class="comment">% simulation time of both PLECS and ode solver</span>
+<span class="keyword">elseif</span> strcmp(testType,<span class="string">'modstep'</span>)
+    phi_bar = (-60)*pi/180;                 <span class="comment">% modulation waveform's phase in (deg to radians)</span>
+    params.steptime = 30/50;                <span class="comment">% instant of inverter operation startup</span>
+    params.modsteptime = 0.49175;           <span class="comment">% instant of modulation index step</span>
+    sim_time = 30/50 + (params.starttime);  <span class="comment">% simulation time of both PLECS and ode solver</span>
+<span class="keyword">elseif</span> strcmp(testType,<span class="string">'start'</span>)
+    phi_bar = 0*pi/180;                     <span class="comment">% modulation waveform's phase in (deg to radians)</span>
+    params.steptime = 45/50;                <span class="comment">% instant of inverter operation startup</span>
+    params.modsteptime = 45/50;             <span class="comment">% instant of modulation index step</span>
+    sim_time = 10/50 + (params.starttime);  <span class="comment">% simulation time of both PLECS and ode solver</span>
+<span class="keyword">end</span>
+</pre><h2 id="5">p-axis and r-axis flag settings</h2><p>p flags' span decides how many w1 harmonics are included in simulation r flags' span decides how many w2 harmonics are included in simulation</p><pre class="codeinput">pflagRange = 1; <span class="comment">% max value of pflags; ex: if this is 2, it includes 0, 1, 2</span>
+rflagRange = 3; <span class="comment">% max value of pflags; ex: if this is 3, it includes 0, 1, 2, 3</span>
+
+<span class="comment">% pflags, rflags are two vectors that have different combinations of p-axis</span>
+<span class="comment">% and r-axis harmonics. These flag vectors are critical to the functioning</span>
+<span class="comment">% of EGAM simulatuion. They acts like keys to encode and decode interfaces</span>
+<span class="comment">% between Fourier vectors: x and Discrete Fourier Images (DFI): Fx.</span>
+[pflags, rflags] = generatePRflags(pflagRange,rflagRange);
+</pre><h2 id="6">Computing EGAM variables: T, q, and R</h2><pre class="codeinput"><span class="comment">% computing the T matrix for EGAM</span>
+T = getTmatrix(pflags, rflags, wg, ws);
+
+<span class="comment">% R matrix is a resistance matrix that accounts for both the high frequency</span>
+<span class="comment">% and low frequency resistances. It needs the pflag and rflag variables in</span>
+<span class="comment">% order to know where exactly the resiostances should go in the matrix.</span>
+params.RIndDCSide = getRmatrix(params.RindDCLF, params.RindDCHF, pflags, rflags);
+params.RIndACSide = getRmatrix(params.RindACLF, params.RindACHF, pflags, rflags);
+
+<span class="comment">% getting SPWM switching vectors before modulation index step</span>
+mod_mag = params.modIdx1; <span class="comment">%before mod step</span>
+m10c = mod_mag*cos(phi_bar);
+m10s = mod_mag*sin(phi_bar);
+m01c = m10c;
+m01s = m10s;
+q1 = getSPWMcoeff(pflags, rflags, m10c, m10s, phi_hat, phi_bar);
+
+<span class="comment">% getting SPWM switching vectors after modulation index step</span>
+mod_mag = params.modIdx2; <span class="comment">%after mod step</span>
+m10c = mod_mag*cos(phi_bar);
+m10s = mod_mag*sin(phi_bar);
+m01c = m10c;
+m01s = m10s;
+q2 = getSPWMcoeff(pflags, rflags, m10c, m10s, phi_hat, phi_bar);
+
+<span class="comment">% assigning the</span>
+<span class="comment">%vC10(1) = params.Vdc;</span>
+</pre><h2 id="7">Initializing and running the EGAM model</h2><pre class="codeinput"><span class="comment">% this is going to be the vector size of each state variable in frequency</span>
+<span class="comment">% domain</span>
+vector_size = (2*max(pflags) + 1) * (2*max(rflags) + 1);
+
+<span class="comment">% zeroing out state variables during initialization</span>
+iL10 = zeros(1,vector_size);
+vC10 = zeros(1,vector_size);
+iL20 = zeros(1,vector_size);
+vC20 = zeros(1,vector_size);
+
+<span class="comment">% stacking the state vectors together to get a composite vector</span>
+x0 = [iL10; vC10; iL20; vC20];
+
+<span class="comment">% setting the simulation time before running the ode process</span>
+time_step = 1e-5;
+tspan = 0:time_step:sim_time;
+
+<span class="comment">%running the ode process</span>
+[t,x] = ode23tb(@(t,x)Inverter_model(t,x,q1, q2,T,pflags, rflags, params),tspan,x0);
+</pre><h2 id="8">reconstruction of time domain signals</h2><pre class="codeinput"><span class="comment">% at this point, x is the average vector of all the states represented as</span>
+<span class="comment">% fourier coefficients</span>
+
+<span class="comment">% the time domain waveforms are recaluclated by x(t) = C(t)*x</span>
+
+IL1 = x(:,1:vector_size);                   <span class="comment">%getting dc inductor current fourier states</span>
+VC1 = x(:,vector_size+1:2*vector_size);     <span class="comment">%voltage dc capacitor voltage fourier states</span>
+IL2 = x(:,2*vector_size+1:3*vector_size);   <span class="comment">%current ac inductor current fourier states</span>
+VC2 = x(:,3*vector_size+1:4*vector_size);   <span class="comment">%voltage ac capacitor voltage fourier states</span>
+
+
+<span class="comment">% unrolling the fourier vector train to build the time domain signal</span>
+iL1_t = build_signal_from_fourier_vector_train(IL1,pflags,rflags,wg,ws,t);
+vC1_t = build_signal_from_fourier_vector_train(VC1,pflags,rflags,wg,ws,t);
+iL2_t = build_signal_from_fourier_vector_train(IL2,pflags,rflags,wg,ws,t);
+vC2_t = build_signal_from_fourier_vector_train(VC2,pflags,rflags,wg,ws,t);
+</pre><h2 id="9">running the Simulink file to compute baseline</h2><pre class="codeinput">PLECS_SIM_time = sim_time;  <span class="comment">% setting simulink simulation time</span>
+sim(<span class="string">'Single_phase_inverter.slx'</span>)
+</pre><h2 id="10">running plot scripts</h2><pre class="codeinput">run(<span class="string">'plot_Data.m'</span>);
+</pre><pre class="codeoutput">Warning: Imaginary parts of complex X and/or Y arguments ignored. 
+Warning: Imaginary parts of complex X and/or Y arguments ignored. 
+Warning: Imaginary parts of complex X and/or Y arguments ignored. 
+Warning: Imaginary parts of complex X and/or Y arguments ignored. 
+</pre><img vspace="5" hspace="5" src="init_script_01.png" alt=""> <img vspace="5" hspace="5" src="init_script_02.png" alt=""> <img vspace="5" hspace="5" src="init_script_03.png" alt=""> <img vspace="5" hspace="5" src="init_script_04.png" alt=""> <p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2022a</a><br></p></div><!--
+##### SOURCE BEGIN #####
+close all
+clear all
+clc
+
+addpath("..\lib\")
+
+%% Test selection
+%Start by selecting the type of test you'll be performing. There are three types if test that you can choose from:
+%start: starup test for inverter
+%loadstep: load step is applied to an inverter in steady state and transients are observed
+%modstep:  modulation index step is applied to an inverter in steady state and transients are observed
+
+%testType = 'start';
+%testType = 'loadstep';
+testType = 'modstep';
+
+%% Parameter settings
+% fix the parameters of the inverter system (or any other system you are
+% modeling). 
+fsw = 10e+3;        %switching frequency
+fg = 50;            % modulation frequency
+Tsw = 1/fsw; 
+wg = 2*pi*fg;       % angular modulation ferequency 
+ws = 2*pi*fsw;      % angular switching ferequency 
+params.Vdc = 50;    % set the dc side voltage 
+
+
+params.L1 = 2.2e-3;                 % dc side inductor
+params.L2 = 2*2.2e-3;               % ac side inductor
+params.RindDCLF = (200+87)*1e-3;    % dc inductor esr low frequency
+params.RindDCHF = 10;               % dc indcutor esr high frequency
+params.RindACLF = (2*87)*1e-3;      % ac inductor esr low frequency
+params.RindACHF = 20;               % ac inductor esr high frequency
+
+
+params.C1 = 520e-6;                 % dc capacitor 
+params.ESRC1 = 100e-3;              % dc capacitor esr (not included in EGAM model; only for PLECS model)
+params.C2 = 10e-6;                  % ac capacitor 
+params.ESRC2 = 1;                   % ac capacitor esr (not included in EGAM model; only for PLECS model)
+params.RL1 = 45;                    % load resistance before load step
+params.RL2 = 22.5;                  % load resistance after load step
+params.VCinit = 0;                  % initial capacitor voltages
+params.ILinit = 0;                  % initial inductor currents
+params.modIdx1 = 0.75;              % modulation index before mod step
+params.modIdx2 = 0.85;              % modulation index after mod step
+
+params.starttime = 0.4;             % instant of inverter operation startup
+params.steptime = 0.2+25/50;        % instant of load step
+params.modsteptime = 0.2+30/50;     % instant of modulation index step
+
+sw_phase = (pi)*(Tsw/(2*pi));       % phase in radians of the carrier wavefrom
+phi_hat = sw_phase * ((2*pi)/Tsw);  
+sw_phase_plecs = 0;
+swmag = 1;
+
+%% time settings
+% setting the simulation time, startup time, modstep time, load step time
+% different settings are applied as they were used to overlay hardware
+% results. This is not relavant if you are running without hardware
+% results. You can choose any values you like. 
+if strcmp(testType,'loadstep')
+    phi_bar = 0*pi/180;                     % modulation waveform's phase in (deg to radians) 
+    params.steptime = 25/50;                % instant of inverter operation startup
+    params.modsteptime = 30/50;             % instant of modulation index step
+    sim_time = 30/50 + (params.starttime);  % simulation time of both PLECS and ode solver
+elseif strcmp(testType,'modstep')
+    phi_bar = (-60)*pi/180;                 % modulation waveform's phase in (deg to radians) 
+    params.steptime = 30/50;                % instant of inverter operation startup
+    params.modsteptime = 0.49175;           % instant of modulation index step
+    sim_time = 30/50 + (params.starttime);  % simulation time of both PLECS and ode solver
+elseif strcmp(testType,'start')
+    phi_bar = 0*pi/180;                     % modulation waveform's phase in (deg to radians) 
+    params.steptime = 45/50;                % instant of inverter operation startup
+    params.modsteptime = 45/50;             % instant of modulation index step
+    sim_time = 10/50 + (params.starttime);  % simulation time of both PLECS and ode solver
+end
+
+%% p-axis and r-axis flag settings
+% p flags' span decides how many w1 harmonics are included in simulation
+% r flags' span decides how many w2 harmonics are included in simulation
+
+pflagRange = 1; % max value of pflags; ex: if this is 2, it includes 0, 1, 2
+rflagRange = 3; % max value of pflags; ex: if this is 3, it includes 0, 1, 2, 3
+
+% pflags, rflags are two vectors that have different combinations of p-axis
+% and r-axis harmonics. These flag vectors are critical to the functioning
+% of EGAM simulatuion. They acts like keys to encode and decode interfaces
+% between Fourier vectors: x and Discrete Fourier Images (DFI): Fx.
+[pflags, rflags] = generatePRflags(pflagRange,rflagRange);
+
+%% Computing EGAM variables: T, q, and R
+
+% computing the T matrix for EGAM
+T = getTmatrix(pflags, rflags, wg, ws);
+
+% R matrix is a resistance matrix that accounts for both the high frequency
+% and low frequency resistances. It needs the pflag and rflag variables in
+% order to know where exactly the resiostances should go in the matrix. 
+params.RIndDCSide = getRmatrix(params.RindDCLF, params.RindDCHF, pflags, rflags);
+params.RIndACSide = getRmatrix(params.RindACLF, params.RindACHF, pflags, rflags);
+
+% getting SPWM switching vectors before modulation index step
+mod_mag = params.modIdx1; %before mod step
+m10c = mod_mag*cos(phi_bar);
+m10s = mod_mag*sin(phi_bar);
+m01c = m10c;
+m01s = m10s;
+q1 = getSPWMcoeff(pflags, rflags, m10c, m10s, phi_hat, phi_bar);
+
+% getting SPWM switching vectors after modulation index step
+mod_mag = params.modIdx2; %after mod step
+m10c = mod_mag*cos(phi_bar);
+m10s = mod_mag*sin(phi_bar);
+m01c = m10c;
+m01s = m10s;
+q2 = getSPWMcoeff(pflags, rflags, m10c, m10s, phi_hat, phi_bar);
+
+% assigning the 
+%vC10(1) = params.Vdc;
+
+%% Initializing and running the EGAM model
+
+% this is going to be the vector size of each state variable in frequency
+% domain
+vector_size = (2*max(pflags) + 1) * (2*max(rflags) + 1);
+
+% zeroing out state variables during initialization
+iL10 = zeros(1,vector_size); 
+vC10 = zeros(1,vector_size);
+iL20 = zeros(1,vector_size);
+vC20 = zeros(1,vector_size);
+
+% stacking the state vectors together to get a composite vector
+x0 = [iL10; vC10; iL20; vC20];
+
+% setting the simulation time before running the ode process
+time_step = 1e-5;
+tspan = 0:time_step:sim_time;
+
+%running the ode process
+[t,x] = ode23tb(@(t,x)Inverter_model(t,x,q1, q2,T,pflags, rflags, params),tspan,x0);
+
+%% reconstruction of time domain signals
+
+% at this point, x is the average vector of all the states represented as
+% fourier coefficients
+
+% the time domain waveforms are recaluclated by x(t) = C(t)*x
+
+IL1 = x(:,1:vector_size);                   %getting dc inductor current fourier states
+VC1 = x(:,vector_size+1:2*vector_size);     %voltage dc capacitor voltage fourier states
+IL2 = x(:,2*vector_size+1:3*vector_size);   %current ac inductor current fourier states
+VC2 = x(:,3*vector_size+1:4*vector_size);   %voltage ac capacitor voltage fourier states
+
+
+% unrolling the fourier vector train to build the time domain signal 
+iL1_t = build_signal_from_fourier_vector_train(IL1,pflags,rflags,wg,ws,t);
+vC1_t = build_signal_from_fourier_vector_train(VC1,pflags,rflags,wg,ws,t);
+iL2_t = build_signal_from_fourier_vector_train(IL2,pflags,rflags,wg,ws,t);
+vC2_t = build_signal_from_fourier_vector_train(VC2,pflags,rflags,wg,ws,t);
+
+
+
+
+%% running the Simulink file to compute baseline
+
+PLECS_SIM_time = sim_time;  % setting simulink simulation time
+sim('Single_phase_inverter.slx')
+
+%% running plot scripts
+run('plot_Data.m');
+
+
+
+
+
+
+
+##### SOURCE END #####
+--></body></html>
