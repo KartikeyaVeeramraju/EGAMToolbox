@@ -2,7 +2,7 @@
 # EGAM Toolbox
 
 A MATLAB toolbox that handles EGAM 2D convolutions to enable simulation of dynamical systems excited by two different fundamental frequencies. 
-
+[![portfolio](https://img.shields.io/badge/my_portfolio-000?style=for-the-badge&logo=ko-fi&logoColor=white)]
 
 
 
