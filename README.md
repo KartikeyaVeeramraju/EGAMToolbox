@@ -26,5 +26,4 @@ This package utilizes [PLECS blockset](https://www.plexim.com/support/videos/int
 
 If you have any feedback, please reach out to us at kimballjw@mst.edu
 
-### DOI
 [![DOI](https://zenodo.org/badge/611948394.svg)](https://zenodo.org/badge/latestdoi/611948394)
